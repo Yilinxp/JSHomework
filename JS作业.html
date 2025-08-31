@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badger Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #c5050c 0%, #9b0000 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .student-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            overflow: hidden;
+            height: 100%;
+        }
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .student-header {
+            background-color: #c5050c;
+            color: white;
+            padding: 15px;
+        }
+        .student-body {
+            padding: 20px;
+        }
+        .badge-wisconsin {
+            background-color: #5a189a;
+            color: white;
+        }
+        .interest-list {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        .interest-item {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .interest-item:hover {
+            color: #c5050c;
+            text-decoration: underline;
+        }
+        .search-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn-badger {
+            background-color: #c5050c;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-badger:hover {
+            background-color: #9b0000;
+            color: white;
+        }
+        .credits {
+            font-weight: bold;
+            color: #c5050c;
+        }
+        .results-count {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #333;
+            padding: 10px 0;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold"><i class="bi bi-journal-bookmark-fill"></i> Badger Book</h1>
+            <p class="lead">University of Wisconsin-Madison Student Directory</p >
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Box -->
+        <div class="search-box">
+            <h3 class="mb-4">Find Students</h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="nameSearch" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="nameSearch" placeholder="e.g. John Smith">
+                </div>
+                <div class="col-md-4">
+                    <label for="majorSearch" class="form-label">Major</label>
+                    <input type="text" class="form-control" id="majorSearch" placeholder="e.g. Computer Science">
+                </div>
+                <div class="col-md-4">
+                    <label for="interestSearch" class="form-label">Interest</label>
+                    <input type="text" class="form-control" id="interestSearch" placeholder="e.g. Programming">
+                </div>
+                <div class="col-12 text-center mt-3">
+                    <button id="searchBtn" class="btn btn-badger btn-lg"><i class="bi bi-search"></i> Search</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Count -->
+        <div class="results-count" id="resultsCount">Your search resulted in 12 students.</div>
+
+        <!-- Students Grid -->
+        <div class="row" id="studentsContainer">
+            <!-- Student cards will be generated here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <div class="container">
+            <p>Badger Book - University of Wisconsin-Madison Student Directory</p >
+            <p>CS571 Assignment &copy; 2023</p >
+        </div>
+    </footer>
+
+    <script>
+        // Sample student data
+        const students = [
+            {
+                firstName: "Avery",
+                lastName: "Clark",
+                major: "History",
+                credits: 18,
+                fromWisconsin: true,
+                interests: ["Running", "Programming", "Camping", "Yoga", "Numismatics"]
+            },
+            {
+                firstName: "Liam",
+                lastName: "Williams",
+                major: "Mathematics",
+                credits: 18,
+                fromWisconsin: true,
+                interests: ["Photography", "Music"]
+            },
+            {
+                firstName: "Charlotte",
+                lastName: "Williams",
+                major: "Mathematics",
+                credits: 16,
+                fromWisconsin: true,
+                interests: ["Archery", "Yoga", "Singing", "Snowboarding"]
+            },
+            {
+                firstName: "Liam",
+                lastName: "Anderson",
+                major: "Mathematics",
+                credits: 16,
+                fromWisconsin: false,
+                interests: ["Magic", "Surfing", "Brewing", "Amateur Radio"]
+            },
+            {
+                firstName: "Jackson",
+                lastName: "Gonzalez",
+                major: "Physics",
+                credits: 18,
+                fromWisconsin: true,
+                interests: ["Snowboarding", "Running", "Yoga", "Reading"]
+            },
+            {
+                firstName: "Isabella",
+                lastName: "Lee",
+                major: "Political Science",
+                credits: 14,
+                fromWisconsin: true,
+                interests: ["Gardening", "Snowboarding"]
+            },
+            {
+                firstName: "Aiden",
+                lastName: "Lewis",
+                major: "Physics",
+                credits: 16,
+                fromWisconsin: true,
+                interests: ["Gaming", "Philately", "Geocaching", "Snowboarding"]
+            },
+            {
+                firstName: "Lucas",
+                lastName: "Smith",
+                major: "Political Science",
+                credits: 15,
+                fromWisconsin: true,
+                interests: ["Pottery", "Stand-up Comedy", "Snowboarding"]
+            },
+            {
+                firstName: "Emily",
+                lastName: "Lopez",
+                major: "History",
+                credits: 15,
+                fromWisconsin: false,
+                interests: ["Woodworking", "Snowboarding", "Fishing", "Rock Climbing"]
+            },
+            {
+                firstName: "Elijah",
+                lastName: "Martin",
+                major: "Mathematics",
+                credits: 18,
+                fromWisconsin: true,
+                interests: ["Swimming", "Theater", "Bird Watching", "Hiking", "Snowboarding"]
+            },
+            {
+                firstName: "Olivia",
+                lastName: "Thomas",
+                major: "Biology",
+                credits: 17,
+                fromWisconsin: true,
+                interests: ["Snowboarding", "Programming"]
+            },
+            {
+                firstName: "Sophia",
+                lastName: "Walker",
+                major: "Computer Science",
+                credits: 16,
+                fromWisconsin: false,
+                interests: ["Programming", "Reading", "Hiking", "Photography"]
+            }
+        ];
+
+        // Display students on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            displayStudents(students);
+            
+            // Add event listener to search button
+            document.getElementById('searchBtn').addEventListener('click', handleSearch);
+        });
+
+        // Function to display students
+        function displayStudents(studentsArray) {
+            const container = document.getElementById('studentsContainer');
+            container.innerHTML = '';
+            
+            studentsArray.forEach(student => {
+                // Create student card
+                const col = document.createElement('div');
+                col.className = 'col-12 col-md-6 col-lg-4 col-xl-3 mb-4';
+                
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                
+                // Student header
+                const header = document.createElement('div');
+                header.className = 'student-header';
+                header.innerHTML = `<h5 class="mb-0">${student.firstName} ${student.lastName}</h5>`;
+                
+                // Student body
+                const body = document.createElement('div');
+                body.className = 'student-body';
+                
+                // Major
+                const major = document.createElement('p');
+                major.className = 'fw-bold text-primary mb-2';
+                major.textContent = student.major;
+                
+                // Credits and Wisconsin info
+                const info = document.createElement('p');
+                info.className = 'mb-2';
+                info.innerHTML = `${student.firstName} is taking <span class="credits">${student.credits} credits</span> and is ${student.fromWisconsin ? 'from <span class="badge badge-wisconsin">Wisconsin</span>' : '<span class="text-danger">NOT from Wisconsin</span>'}.`;
+                
+                // Interests
+                const interestsTitle = document.createElement('p');
+                interestsTitle.className = 'mb-1';
+                interestsTitle.innerHTML = `They have <strong>${student.interests.length}</strong> interests including...`;
+                
+                const interestsList = document.createElement('ul');
+                interestsList.className = 'interest-list';
+                
+                student.interests.forEach(interest => {
+                    const interestItem = document.createElement('li');
+                    const interestLink = document.createElement('span');
+                    interestLink.className = 'interest-item';
+                    interestLink.textContent = interest;
+                    interestLink.addEventListener('click', () => {
+                        document.getElementById('interestSearch').value = interest;
+                        handleSearch();
+                    });
+                    interestItem.appendChild(interestLink);
+                    interestsList.appendChild(interestItem);
+                });
+                
+                // Append all elements to the card
+                body.appendChild(major);
+                body.appendChild(info);
+                body.appendChild(interestsTitle);
+                body.appendChild(interestsList);
+                
+                card.appendChild(header);
+                card.appendChild(body);
+                col.appendChild(card);
+                
+                container.appendChild(col);
+            });
+            
+            // Update results count
+            document.getElementById('resultsCount').textContent = `Your search resulted in ${studentsArray.length} student${studentsArray.length !== 1 ? 's' : ''}.`;
+        }
+
+        // Function to handle search
+        function handleSearch() {
+            const nameQuery = document.getElementById('nameSearch').value.toLowerCase().trim();
+            const majorQuery = document.getElementById('majorSearch').value.toLowerCase().trim();
+            const interestQuery = document.getElementById('interestSearch').value.toLowerCase().trim();
+            
+            const filteredStudents = students.filter(student => {
+                // Check name match
+                const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
+                const nameMatch = !nameQuery || fullName.includes(nameQuery);
+                
+                // Check major match
+                const majorMatch = !majorQuery || student.major.toLowerCase().includes(majorQuery);
+                
+                // Check interest match
+                let interestMatch = false;
+                if (!interestQuery) {
+                    interestMatch = true;
+                } else {
+                    interestMatch = student.interests.some(interest => 
+                        interest.toLowerCase().includes(interestQuery)
+                    );
+                }
+                
+                return nameMatch && majorMatch && interestMatch;
+            });
+            
+            displayStudents(filteredStudents);
+        }
+    </script>
+</body>
+</html>
